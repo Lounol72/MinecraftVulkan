@@ -10,7 +10,19 @@ namespace mc {
 
 // Placeholder for future pipeline configuration (viewport, rasterizer,
 // blend state, etc.). Passed to the constructor to keep it flexible.
-struct PipelineConfigInfo {};
+struct PipelineConfigInfo {
+  VkViewport viewport;
+  VkRect2D scissor;
+  VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+  VkPipelineRasterizationStateCreateInfo rasterizationInfo;
+  VkPipelineMultisampleStateCreateInfo multisampleInfo;
+  VkPipelineColorBlendAttachmentState colorBlendAttachment;
+  VkPipelineColorBlendStateCreateInfo colorBlendInfo;
+  VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+  VkPipelineLayout pipelineLayout = nullptr;
+  VkRenderPass renderPass = nullptr;
+  uint32_t subpass = 0;
+};
 
 // Owns the VkPipeline and its shader modules.
 // Non-copyable: pipeline objects hold GPU resources that must not be aliased.
@@ -20,11 +32,12 @@ public:
            const std::string &fragFilePath,
            const PipelineConfigInfo &configInfo);
 
-  ~Pipeline() {}
+  ~Pipeline();
   Pipeline(const Pipeline &) = delete;
   void operator=(const Pipeline &) = delete;
 
-  // Returns a sensible default config for a full-screen viewport of the given dimensions.
+  // Returns a sensible default config for a full-screen viewport of the given
+  // dimensions.
   static PipelineConfigInfo defaultPipelineConfigInfo(u_int32_t width,
                                                       u_int32_t height);
 
