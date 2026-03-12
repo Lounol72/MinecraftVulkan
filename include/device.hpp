@@ -8,12 +8,16 @@
 
 namespace mc {
 
+// Cached swapchain capabilities queried from the physical device.
+// Used to choose the best surface format, present mode, and extent.
 struct SwapChainSupportDetails {
   VkSurfaceCapabilitiesKHR capabilities;
   std::vector<VkSurfaceFormatKHR> formats;
   std::vector<VkPresentModeKHR> presentModes;
 };
 
+// Indices of the queue families we need. Graphics and present can differ
+// on some hardware (e.g. a dedicated transfer GPU), so we track them separately.
 struct QueueFamilyIndices {
   uint32_t graphicsFamily;
   uint32_t presentFamily;
@@ -22,8 +26,11 @@ struct QueueFamilyIndices {
   bool isComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
 };
 
+// Abstracts the Vulkan physical/logical device pair and owns shared GPU resources
+// (command pool, queues, surface). All other Vulkan objects depend on this class.
 class Device {
 public:
+  // Validation layers are enabled in debug builds only (NDEBUG not set).
 #ifdef NDEBUG
   const bool enableValidationLayers = false;
 #else
@@ -57,11 +64,13 @@ public:
                                VkImageTiling tiling,
                                VkFormatFeatureFlags features);
 
-  // Buffer Helper Functions
+  // Buffer helpers — allocate, bind memory, and copy in one call.
   void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
                     VkMemoryPropertyFlags properties, VkBuffer &buffer,
                     VkDeviceMemory &bufferMemory);
+  // Allocates a one-shot command buffer and starts recording.
   VkCommandBuffer beginSingleTimeCommands();
+  // Submits and waits for the one-shot command buffer, then frees it.
   void endSingleTimeCommands(VkCommandBuffer commandBuffer);
   void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
   void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width,

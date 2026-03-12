@@ -1,9 +1,13 @@
 #pragma once
 
+#include "device.hpp"
 #include "pipeline.hpp"
 #include "window.hpp"
 
 namespace mc {
+
+// Top-level entry point: owns all Vulkan resources and drives the event loop.
+// Initialization order matters — Window must exist before Device, Device before Pipeline.
 class App {
 public:
   static constexpr int WIDTH = 800;
@@ -13,6 +17,9 @@ public:
 
 private:
   Window window{WIDTH, HEIGHT, "Hello Vulkan!"};
-  Pipeline pipeline{"shaders/shader.vert.spv", "shaders/shader.frag.spv"};
+  Device device{window};
+  Pipeline pipeline{device, "shaders/shader.vert.spv",
+                    "shaders/shader.frag.spv",
+                    Pipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)};
 };
 } // namespace mc

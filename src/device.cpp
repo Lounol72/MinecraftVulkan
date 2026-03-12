@@ -9,6 +9,9 @@
 namespace mc {
 
 // local callback functions
+
+// Called by the validation layer for warnings/errors. Returns VK_FALSE to
+// indicate we do not want Vulkan to abort the triggering API call.
 static VKAPI_ATTR VkBool32 VKAPI_CALL
 debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
               VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -19,6 +22,9 @@ debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
   return VK_FALSE;
 }
 
+// vkCreateDebugUtilsMessengerEXT is an extension function — it is not
+// statically linked, so we must look it up at runtime via
+// vkGetInstanceProcAddr.
 VkResult CreateDebugUtilsMessengerEXT(
     VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks *pAllocator,
@@ -32,6 +38,7 @@ VkResult CreateDebugUtilsMessengerEXT(
   }
 }
 
+// Same runtime lookup pattern as CreateDebugUtilsMessengerEXT.
 void DestroyDebugUtilsMessengerEXT(VkInstance instance,
                                    VkDebugUtilsMessengerEXT debugMessenger,
                                    const VkAllocationCallbacks *pAllocator) {
@@ -71,7 +78,7 @@ void Device::createInstance() {
 
   VkApplicationInfo appInfo = {};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-  appInfo.pApplicationName = "LittleVulkanEngine App";
+  appInfo.pApplicationName = "Minecraft Vulkan";
   appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
   appInfo.pEngineName = "No Engine";
   appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
@@ -111,7 +118,6 @@ void Device::pickPhysicalDevice() {
   if (deviceCount == 0) {
     throw std::runtime_error("failed to find GPUs with Vulkan support!");
   }
-  std::cout << "Device count: " << deviceCount << std::endl;
   std::vector<VkPhysicalDevice> devices(deviceCount);
   vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
@@ -127,7 +133,6 @@ void Device::pickPhysicalDevice() {
   }
 
   vkGetPhysicalDeviceProperties(physicalDevice, &properties);
-  std::cout << "physical device: " << properties.deviceName << std::endl;
 }
 
 void Device::createLogicalDevice() {
@@ -205,6 +210,7 @@ bool Device::isDeviceSuitable(VkPhysicalDevice device) {
 
   bool extensionsSupported = checkDeviceExtensionSupport(device);
 
+  // Swapchain support is only meaningful if the extension is present.
   bool swapChainAdequate = false;
   if (extensionsSupported) {
     SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
@@ -215,6 +221,7 @@ bool Device::isDeviceSuitable(VkPhysicalDevice device) {
   VkPhysicalDeviceFeatures supportedFeatures;
   vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
 
+  // Anisotropic filtering is required for texture quality.
   return indices.isComplete() && extensionsSupported && swapChainAdequate &&
          supportedFeatures.samplerAnisotropy;
 }
@@ -290,17 +297,13 @@ void Device::hasGflwRequiredInstanceExtensions() {
   vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,
                                          extensions.data());
 
-  std::cout << "available extensions:" << std::endl;
   std::unordered_set<std::string> available;
   for (const auto &extension : extensions) {
-    std::cout << "\t" << extension.extensionName << std::endl;
     available.insert(extension.extensionName);
   }
 
-  std::cout << "required extensions:" << std::endl;
   auto requiredExtensions = getRequiredExtensions();
   for (const auto &required : requiredExtensions) {
-    std::cout << "\t" << required << std::endl;
     if (available.find(required) == available.end()) {
       throw std::runtime_error("Missing required glfw extension");
     }
@@ -407,6 +410,8 @@ uint32_t Device::findMemoryType(uint32_t typeFilter,
                                 VkMemoryPropertyFlags properties) {
   VkPhysicalDeviceMemoryProperties memProperties;
   vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+  // typeFilter is a bitmask of acceptable memory type indices from
+  // vkGetBufferMemoryRequirements.
   for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
     if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags &
                                     properties) == properties) {
@@ -447,6 +452,8 @@ void Device::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
   vkBindBufferMemory(device_, buffer, bufferMemory, 0);
 }
 
+// Allocates a temporary command buffer for a one-shot GPU operation (e.g.
+// buffer copy). Must be paired with endSingleTimeCommands().
 VkCommandBuffer Device::beginSingleTimeCommands() {
   VkCommandBufferAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -459,12 +466,16 @@ VkCommandBuffer Device::beginSingleTimeCommands() {
 
   VkCommandBufferBeginInfo beginInfo{};
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+  // ONE_TIME_SUBMIT lets the driver optimize knowing we won't reuse this
+  // buffer.
   beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
   vkBeginCommandBuffer(commandBuffer, &beginInfo);
   return commandBuffer;
 }
 
+// Submits the one-shot buffer and blocks until the GPU is done, then frees it.
+// Blocking is acceptable here because these are infrequent setup operations.
 void Device::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
   vkEndCommandBuffer(commandBuffer);
 
@@ -498,6 +509,7 @@ void Device::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width,
 
   VkBufferImageCopy region{};
   region.bufferOffset = 0;
+  // 0 means tightly packed rows — no padding between rows in the source buffer.
   region.bufferRowLength = 0;
   region.bufferImageHeight = 0;
 
