@@ -23,7 +23,6 @@ Pipeline::~Pipeline() {
   vkDestroyShaderModule(device.device(), vertShaderModule, nullptr);
   vkDestroyShaderModule(device.device(), fragShaderModule, nullptr);
   vkDestroyPipeline(device.device(), graphicsPipeline, nullptr);
-  vkDestroyPipeline(device.device(), graphicsPipeline, nullptr);
 }
 
 std::vector<char> Pipeline::readFile(const std::string &filePath) {
@@ -79,7 +78,7 @@ void Pipeline::createGraphicsPipeline(const std::string &vertFilePath,
 
   VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
   vertexInputInfo.sType =
-      VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
   vertexInputInfo.vertexAttributeDescriptionCount = 0;
   vertexInputInfo.vertexBindingDescriptionCount = 0;
   vertexInputInfo.pVertexAttributeDescriptions = nullptr;
@@ -207,5 +206,9 @@ PipelineConfigInfo Pipeline::defaultPipelineConfigInfo(u_int32_t width,
   configInfo.depthStencilInfo.back = {};
 
   return configInfo;
+}
+void Pipeline::bind(VkCommandBuffer commandBuffer) {
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    graphicsPipeline);
 }
 } // namespace mc

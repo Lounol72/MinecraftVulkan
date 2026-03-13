@@ -41,6 +41,8 @@ public:
   static PipelineConfigInfo defaultPipelineConfigInfo(u_int32_t width,
                                                       u_int32_t height);
 
+  void bind(VkCommandBuffer commandBuffer);
+
 private:
   // Reads a binary file (e.g. SPIR-V) fully into a byte buffer.
   static std::vector<char> readFile(const std::string &filePath);
