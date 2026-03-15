@@ -1,11 +1,10 @@
 #pragma once
 
 #include "device.hpp"
+#include "model.hpp"
 #include "pipeline.hpp"
 #include "swap_chain.hpp"
 #include "window.hpp"
-
-#include <vulkan/vulkan.h>
 
 // std
 #include <memory>
@@ -14,8 +13,8 @@
 namespace mc {
 
 // Top-level entry point: owns all Vulkan resources and drives the event loop.
-// Initialization order matters — Window must exist before Device, Device before
-// Pipeline.
+// Initialization order matters — Window must exist before Device, Device
+// before Pipeline.
 class App {
 public:
   static constexpr int WIDTH = 800;
@@ -30,6 +29,7 @@ public:
   void run();
 
 private:
+  void loadModels();
   void createPipelineLayout();
   void createPipeline();
   void createCommandBuffers();
@@ -41,5 +41,6 @@ private:
   std::unique_ptr<Pipeline> pipeline;
   VkPipelineLayout pipelineLayout;
   std::vector<VkCommandBuffer> commandBuffers;
+  std::unique_ptr<Model> model;
 };
 } // namespace mc
