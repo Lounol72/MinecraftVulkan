@@ -11,8 +11,12 @@ namespace mc {
 // Placeholder for future pipeline configuration (viewport, rasterizer,
 // blend state, etc.). Passed to the constructor to keep it flexible.
 struct PipelineConfigInfo {
-  VkViewport viewport;
-  VkRect2D scissor;
+  PipelineConfigInfo() = default;
+  PipelineConfigInfo(const PipelineConfigInfo &) = delete;
+  PipelineConfigInfo &operator=(const PipelineConfigInfo &) = delete;
+
+  std::vector<VkDynamicState> dynamicStateEnables;
+  VkPipelineDynamicStateCreateInfo dynamicStateInfo;
   VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
   VkPipelineRasterizationStateCreateInfo rasterizationInfo;
   VkPipelineMultisampleStateCreateInfo multisampleInfo;
@@ -34,12 +38,11 @@ public:
 
   ~Pipeline();
   Pipeline(const Pipeline &) = delete;
-  void operator=(const Pipeline &) = delete;
+  Pipeline &operator=(const Pipeline &) = delete;
 
   // Returns a sensible default config for a full-screen viewport of the given
   // dimensions.
-  static PipelineConfigInfo defaultPipelineConfigInfo(u_int32_t width,
-                                                      u_int32_t height);
+  static void defaultPipelineConfigInfo(PipelineConfigInfo &configInfo);
 
   void bind(VkCommandBuffer commandBuffer);
 

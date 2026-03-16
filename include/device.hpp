@@ -17,7 +17,8 @@ struct SwapChainSupportDetails {
 };
 
 // Indices of the queue families we need. Graphics and present can differ
-// on some hardware (e.g. a dedicated transfer GPU), so we track them separately.
+// on some hardware (e.g. a dedicated transfer GPU), so we track them
+// separately.
 struct QueueFamilyIndices {
   uint32_t graphicsFamily;
   uint32_t presentFamily;
@@ -26,8 +27,9 @@ struct QueueFamilyIndices {
   bool isComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
 };
 
-// Abstracts the Vulkan physical/logical device pair and owns shared GPU resources
-// (command pool, queues, surface). All other Vulkan objects depend on this class.
+// Abstracts the Vulkan physical/logical device pair and owns shared GPU
+// resources (command pool, queues, surface). All other Vulkan objects depend on
+// this class.
 class Device {
 public:
   // Validation layers are enabled in debug builds only (NDEBUG not set).
@@ -42,7 +44,7 @@ public:
 
   // Not copyable or movable
   Device(const Device &) = delete;
-  void operator=(const Device &) = delete;
+  Device operator=(const Device &) = delete;
   Device(Device &&) = delete;
   Device &operator=(Device &&) = delete;
 
