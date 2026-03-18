@@ -1,5 +1,7 @@
 #include "../include/app.hpp"
+
 #include "../include/camera.hpp"
+#include "../include/keyboard_movement_controller.hpp"
 #include "../include/simple_render_system.hpp"
 
 #define GLM_FORCE_RADIANS
@@ -8,6 +10,7 @@
 #include <glm/gtc/constants.hpp>
 
 #include <cassert>
+#include <chrono>
 #include <memory>
 
 namespace mc {
@@ -20,12 +23,30 @@ void App::run() {
                                         renderer.getSwapChainRenderPass()};
   Camera camera{};
 
+  camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
+
+  auto viewerObject = GameObject::createGameObject();
+  KeyBoardMovementController cameraController{};
+
+  auto currentTime = std::chrono::high_resolution_clock::now();
+
   while (!window.shouldClose()) {
     glfwPollEvents();
 
+    auto newTime = std::chrono::high_resolution_clock::now();
+    float frameTime =
+        std::chrono::duration<float, std::chrono::seconds::period>(newTime -
+                                                                   currentTime)
+            .count();
+    currentTime = newTime;
+
+    cameraController.moveInPlaneXZ(window.getGLFWwindow(), frameTime,
+                                   viewerObject);
+    camera.setViewYXZ(viewerObject.transform.translation,
+                      viewerObject.transform.rotation);
+
     float aspectRatio = renderer.getAspectRatio();
-    // camera.setOrthographicProjection(-aspectRatio, aspectRatio, -1, 1, -1,
-    // 1);
+
     camera.setPerspectiveProjection(glm::radians(50.f), aspectRatio, 0.1f,
                                     10.f);
 

@@ -23,6 +23,7 @@ public:
   }
   bool wasWindowResized() { return frameBufferResized; }
   void resetWindowResizedFlag() { frameBufferResized = false; }
+  GLFWwindow *getGLFWwindow() const { return window; }
 
   // Creates a Vulkan surface tied to this window, required by the swapchain.
   void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
