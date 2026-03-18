@@ -1,4 +1,5 @@
 #include "../include/app.hpp"
+#include "../include/camera.hpp"
 #include "../include/simple_render_system.hpp"
 
 #define GLM_FORCE_RADIANS
@@ -8,7 +9,6 @@
 
 #include <cassert>
 #include <memory>
-#include <stdexcept>
 
 namespace mc {
 
@@ -18,35 +18,91 @@ void App::run() {
 
   SimpleRenderSystem simpleRenderSystem{device,
                                         renderer.getSwapChainRenderPass()};
+  Camera camera{};
 
   while (!window.shouldClose()) {
     glfwPollEvents();
+
+    float aspectRatio = renderer.getAspectRatio();
+    // camera.setOrthographicProjection(-aspectRatio, aspectRatio, -1, 1, -1,
+    // 1);
+    camera.setPerspectiveProjection(glm::radians(50.f), aspectRatio, 0.1f,
+                                    10.f);
+
     if (auto commandBuffer = renderer.beginFrame()) {
       renderer.beginSwapChainRenderPass(commandBuffer);
-      simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects,
-                                           renderer.getSwapChainExtent());
+      simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
       renderer.endSwapChainRenderPass(commandBuffer);
       renderer.endFrame();
     }
   }
   vkDeviceWaitIdle(device.device());
 }
+// temporary helper function, creates a 1x1x1 cube centered at offset
+std::unique_ptr<Model> createCubeModel(Device &device, glm::vec3 offset) {
+  std::vector<Model::Vertex> vertices{
 
+      // left face (white)
+      {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+      {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+      {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
+      {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+      {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
+      {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+
+      // right face (yellow)
+      {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+      {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
+      {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+      {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+
+      // top face (orange, remember y axis points down)
+      {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+      {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+      {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+      {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+      {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+      {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+
+      // bottom face (red)
+      {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+      {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
+      {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+      {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+      {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+
+      // nose face (blue)
+      {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+      {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+      {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+      {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+      {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+      {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+
+      // tail face (green)
+      {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+      {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+      {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+      {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+      {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+      {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+
+  };
+  for (auto &v : vertices) {
+    v.position += offset;
+  }
+  return std::make_unique<Model>(device, vertices);
+}
 void App::loadGameObjects() {
-  std::vector<Model::Vertex> vertices{{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-                                      {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-                                      {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-                                      {{0.5f, -0.5f}},
-                                      {{0.5f, 0.5f}},
-                                      {{-0.5f, 0.5f}}};
-  auto model = std::make_shared<Model>(device, vertices);
+  std::shared_ptr<Model> Gamemodel = createCubeModel(device, {0.f, 0.f, 0.f});
 
-  auto triangle = GameObject::createGameObject();
-  triangle.model = model;
-  triangle.color = {.1f, .8f, .1f};
-  /*   triangle.transform2d.translation.x = .2f; */
-  triangle.transform2d.scale = {1.f, 1.f};
-  triangle.transform2d.rotation = .25f * glm::two_pi<float>();
-  gameObjects.push_back(std::move(triangle));
+  auto cube = GameObject::createGameObject();
+  cube.model = Gamemodel;
+  cube.transform.translation = {.0f, .0f, 2.5f};
+  cube.transform.scale = {.5f, .5f, .5f};
+  gameObjects.push_back(std::move(cube));
 }
 } // namespace mc

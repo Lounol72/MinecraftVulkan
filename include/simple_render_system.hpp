@@ -1,5 +1,6 @@
 #pragma once
 
+#include "camera.hpp"
 #include "device.hpp"
 #include "game_object.hpp"
 #include "pipeline.hpp"
@@ -23,7 +24,7 @@ public:
 
   void renderGameObjects(VkCommandBuffer commandBuffer,
                          std::vector<GameObject> &gameObjects,
-                         VkExtent2D extent);
+                         const Camera &camera);
 
 private:
   void createPipelineLayout();

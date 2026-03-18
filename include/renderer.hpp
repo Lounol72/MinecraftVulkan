@@ -26,10 +26,7 @@ public:
   VkRenderPass getSwapChainRenderPass() const {
     return swapChain->getRenderPass();
   }
-
-  VkExtent2D getSwapChainExtent() const {
-    return swapChain->getSwapChainExtent();
-  }
+  float getAspectRatio() const { return swapChain->extentAspectRatio(); }
 
   bool isFrameInProgress() const { return isFrameStarted; }
 
