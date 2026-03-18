@@ -15,7 +15,7 @@ SHADERS  := $(VERT_SPV) $(FRAG_SPV)
 
 .PHONY: all test clean shaders
 
-all: $(TARGET)
+all: $(TARGET) shaders test
 
 $(VERT_SPV): $(VERT_SRC)
 	$(GLSLC) $< -o $@

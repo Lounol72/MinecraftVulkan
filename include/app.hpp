@@ -1,9 +1,8 @@
 #pragma once
 
 #include "device.hpp"
-#include "model.hpp"
-#include "pipeline.hpp"
-#include "swap_chain.hpp"
+#include "game_object.hpp"
+#include "renderer.hpp"
 #include "window.hpp"
 
 // std
@@ -29,21 +28,12 @@ public:
   void run();
 
 private:
-  void loadModels();
-  void createPipelineLayout();
-  void createPipeline();
-  void createCommandBuffers();
-  void freeCommandBuffers();
-  void drawFrame();
-  void recreateSwapChain();
-  void recordCommandBuffer(int imageIndex);
+  void loadGameObjects();
 
   Window window{WIDTH, HEIGHT, "Hello Vulkan!"};
   Device device{window};
-  std::unique_ptr<SwapChain> swapChain;
-  std::unique_ptr<Pipeline> pipeline;
-  VkPipelineLayout pipelineLayout;
-  std::vector<VkCommandBuffer> commandBuffers;
-  std::unique_ptr<Model> model;
+  Renderer renderer{window, device};
+
+  std::vector<GameObject> gameObjects;
 };
 } // namespace mc
