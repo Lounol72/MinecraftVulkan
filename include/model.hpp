@@ -1,5 +1,6 @@
 #pragma once
 
+#include "buffer.hpp"
 #include "device.hpp"
 
 #define GLM_FORCE_RADIANS
@@ -16,7 +17,7 @@ public:
   struct Vertex {
     glm::vec3 position{};
     glm::vec3 color{};
-    glm::vec3 normals{};
+    glm::vec3 normal{};
     glm::vec2 uv{};
 
     static std::vector<VkVertexInputBindingDescription>
@@ -26,7 +27,7 @@ public:
 
     bool operator==(const Vertex &other) const {
       return position == other.position && color == other.color &&
-             normals == other.normals && uv == other.uv;
+             normal == other.normal && uv == other.uv;
     }
   };
 
@@ -56,13 +57,11 @@ private:
 
   Device &device;
 
-  VkBuffer vertexBuffer;
-  VkDeviceMemory vertexBufferMemory;
+  std::unique_ptr<Buffer> vertexBuffer{};
   uint32_t vertexCount;
 
   bool hasIndexBuffer = false;
-  VkBuffer indexBuffer;
-  VkDeviceMemory indexBufferMemory;
+  std::unique_ptr<Buffer> indexBuffer{};
   uint32_t indexCount;
 };
 } // namespace mc

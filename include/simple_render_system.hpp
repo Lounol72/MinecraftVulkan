@@ -1,7 +1,7 @@
 #pragma once
 
-#include "camera.hpp"
 #include "device.hpp"
+#include "frame_info.hpp"
 #include "game_object.hpp"
 #include "pipeline.hpp"
 
@@ -16,18 +16,18 @@ namespace mc {
 // before Pipeline.
 class SimpleRenderSystem {
 public:
-  SimpleRenderSystem(Device &device, VkRenderPass renderPass);
+  SimpleRenderSystem(Device &device, VkRenderPass renderPass,
+                     VkDescriptorSetLayout globalSetLayout);
   ~SimpleRenderSystem();
 
   SimpleRenderSystem(const SimpleRenderSystem &) = delete;
   SimpleRenderSystem &operator=(const SimpleRenderSystem &) = delete;
 
-  void renderGameObjects(VkCommandBuffer commandBuffer,
-                         std::vector<GameObject> &gameObjects,
-                         const Camera &camera);
+  void renderGameObjects(FrameInfo &frameInfo,
+                         std::vector<GameObject> &gameObjects);
 
 private:
-  void createPipelineLayout();
+  void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
   void createPipeline(VkRenderPass renderPass);
 
   Device &device;
