@@ -2,6 +2,7 @@
 
 #include "device.hpp"
 #include <vector>
+#include <vulkan/vulkan_core.h>
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -20,7 +21,12 @@ public:
     getAttributeDescriptions();
   };
 
-  Model(Device &inDevice, const std::vector<Vertex> &vertices);
+  struct Builder {
+    std::vector<Vertex> vertices{};
+    std::vector<uint32_t> indices{};
+  };
+
+  Model(Device &inDevice, const Model::Builder &builder);
   ~Model();
 
   Model(const Model &) = delete;
@@ -31,10 +37,19 @@ public:
 
 private:
   void createVertexBuffers(const std::vector<Vertex> &vertices);
+  void createIndexBuffers(const std::vector<uint32_t> &indices);
+
+  VkIndexType indexType;
 
   Device &device;
+
   VkBuffer vertexBuffer;
   VkDeviceMemory vertexBufferMemory;
-  u_int32_t vertexCount;
+  uint32_t vertexCount;
+
+  bool hasIndexBuffer = false;
+  VkBuffer indexBuffer;
+  VkDeviceMemory indexBufferMemory;
+  uint32_t indexCount;
 };
 } // namespace mc
