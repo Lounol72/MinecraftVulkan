@@ -1,5 +1,5 @@
-#include "../include/pipeline.hpp"
-#include "../include/model.hpp"
+#include "pipeline.hpp"
+#include "model.hpp"
 #include <cassert>
 #include <fstream>
 #include <iostream>

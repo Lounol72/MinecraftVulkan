@@ -1,4 +1,4 @@
-#include "../include/keyboard_movement_controller.hpp"
+#include "keyboard_movement_controller.hpp"
 #include <glm/common.hpp>
 #include <glm/gtc/constants.hpp>
 #include <limits>

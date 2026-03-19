@@ -1,4 +1,4 @@
-#include "../include/camera.hpp"
+#include "camera.hpp"
 
 #include <cassert>
 #include <glm/ext/matrix_float4x4.hpp>

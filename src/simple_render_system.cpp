@@ -1,4 +1,4 @@
-#include "../include/simple_render_system.hpp"
+#include "simple_render_system.hpp"
 #include <cassert>
 
 #define GLM_FORCE_RADIANS

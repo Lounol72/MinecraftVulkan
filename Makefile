@@ -1,5 +1,6 @@
 CXX      := g++
-CXXFLAGS := -std=c++17 -O2
+LIBS_INCLUDES := $(patsubst %,-I%,$(wildcard libs/*))
+CXXFLAGS := -std=c++17 -O2 -Iinclude $(LIBS_INCLUDES)
 LDFLAGS  := -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
 GLSLC    := glslc
 
@@ -18,18 +19,22 @@ SHADERS  := $(VERT_SPV) $(FRAG_SPV)
 all: $(TARGET) shaders test
 
 $(VERT_SPV): $(VERT_SRC)
-	$(GLSLC) $< -o $@
+	@echo "Compilation de vertex shader"
+	@$(GLSLC) $< -o $@
 
 $(FRAG_SPV): $(FRAG_SRC)
-	$(GLSLC) $< -o $@
+	@echo "Compilation de fragment shader"
+	@$(GLSLC) $< -o $@
 
 $(TARGET): $(SRC) $(HDR) $(SHADERS)
-	$(CXX) $(CXXFLAGS) -o $@ $(SRC) $(LDFLAGS)
+	@echo "Compilation du projet"
+	@$(CXX) $(CXXFLAGS) -o $@ $(SRC) $(LDFLAGS)
 
 shaders: $(SHADERS)
 
 test: $(TARGET)
-	./$(TARGET)
+	@echo "Lancement du projet"
+	@./$(TARGET)
 
 clean:
 	rm -f $(TARGET) $(SHADERS)

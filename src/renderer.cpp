@@ -1,4 +1,4 @@
-#include "../include/renderer.hpp"
+#include "renderer.hpp"
 
 #include <array>
 #include <cassert>

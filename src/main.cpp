@@ -1,4 +1,4 @@
-#include "../include/app.hpp"
+#include "app.hpp"
 #include <cstdlib>
 #include <iostream>
 

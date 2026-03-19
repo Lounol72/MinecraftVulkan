@@ -1,0 +1,167 @@
+[
+  {
+    "file": "src/app.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/app.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  },
+  {
+    "file": "src/camera.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/camera.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  },
+  {
+    "file": "src/device.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/device.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  },
+  {
+    "file": "src/keyboard_movement_controller.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/keyboard_movement_controller.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  },
+  {
+    "file": "src/main.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/main.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  },
+  {
+    "file": "src/model.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/model.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  },
+  {
+    "file": "src/pipeline.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/pipeline.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  },
+  {
+    "file": "src/renderer.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/renderer.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  },
+  {
+    "file": "src/simple_render_system.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/simple_render_system.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  },
+  {
+    "file": "src/swap_chain.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/swap_chain.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  },
+  {
+    "file": "src/window.cpp",
+    "arguments": [
+      "g++",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-Ilibs/tinyobjloader",
+      "-o",
+      "VulkanTest",
+      "src/window.cpp"
+    ],
+    "directory": "/home/lounol72/Projets/Cpp/vulkanEngine",
+    "output": "VulkanTest"
+  }
+]

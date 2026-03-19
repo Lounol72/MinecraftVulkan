@@ -1,4 +1,4 @@
-#include "../include/window.hpp"
+#include "window.hpp"
 #include <GLFW/glfw3.h>
 #include <stdexcept>
 #include <vulkan/vulkan_core.h>
