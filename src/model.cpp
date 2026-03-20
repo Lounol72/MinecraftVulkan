@@ -1,7 +1,10 @@
 #include "model.hpp"
 #include "utils.hpp"
 #include <cstdint>
+#include <iostream>
 #include <memory>
+#include <regex>
+#include <stdexcept>
 #include <vulkan/vulkan_core.h>
 
 // libs
@@ -9,6 +12,11 @@
 #include <tiny_obj_loader.h>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
+
+#define TINYGLTF_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "tiny_gltf.h"
 
 // std
 #include <cassert>
@@ -169,6 +177,18 @@ Model::Vertex::getAttributeDescriptions() {
 }
 
 void Model::Builder::loadModel(const std::string &filePath) {
+  auto endsWith = [](const std::string &s, const std::string &suffix) {
+    return s.size() >= suffix.size() &&
+           s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
+  };
+  if (endsWith(filePath, ".glb") || endsWith(filePath, ".gltf")) {
+    loadGltf(filePath);
+  } else {
+    loadObj(filePath);
+  }
+}
+
+void Model::Builder::loadObj(const std::string &filePath) {
   tinyobj::attrib_t attrib;
   std::vector<tinyobj::shape_t> shapes;
   std::vector<tinyobj::material_t> materials;
@@ -222,4 +242,99 @@ void Model::Builder::loadModel(const std::string &filePath) {
   }
 }
 
+void Model::Builder::loadGltf(const std::string &filePath) {
+  tinygltf::Model gltfModel;
+  tinygltf::TinyGLTF loader;
+  std::string warn, err;
+
+  std::regex self_regex(".glb", std::regex_constants::ECMAScript |
+                                    std::regex_constants::icase);
+
+  bool ok = std::regex_search(filePath, self_regex)
+                ? loader.LoadBinaryFromFile(&gltfModel, &err, &warn, filePath)
+                : loader.LoadASCIIFromFile(&gltfModel, &err, &warn, filePath);
+  if (!ok) {
+    throw std::runtime_error(warn + err);
+  }
+
+  vertices.clear();
+  indices.clear();
+
+  for (auto &mesh : gltfModel.meshes) {
+    for (auto &primitive : mesh.primitives) {
+      // --- Positions ---
+      const float *positions = nullptr;
+      size_t vertexCount = 0;
+      if (primitive.attributes.count("POSITION")) {
+        auto &acc = gltfModel.accessors[primitive.attributes.at("POSITION")];
+        auto &bv = gltfModel.bufferViews[acc.bufferView];
+        auto &buf = gltfModel.buffers[bv.buffer];
+        positions = reinterpret_cast<const float *>(
+            buf.data.data() + bv.byteOffset + acc.byteOffset);
+        vertexCount = acc.count;
+      }
+
+      // --- Normales ---
+      const float *normals = nullptr;
+      if (primitive.attributes.count("NORMAL")) {
+        auto &acc = gltfModel.accessors[primitive.attributes.at("NORMAL")];
+        auto &bv = gltfModel.bufferViews[acc.bufferView];
+        auto &buf = gltfModel.buffers[bv.buffer];
+        normals = reinterpret_cast<const float *>(
+            buf.data.data() + bv.byteOffset + acc.byteOffset);
+      }
+
+      // ---UVs---
+      const float *uvs = nullptr;
+      if (primitive.attributes.count("TEXCOORD_0")) {
+        auto &acc = gltfModel.accessors[primitive.attributes.at("TEXCOORD_0")];
+        auto &bv = gltfModel.bufferViews[acc.bufferView];
+        auto &buf = gltfModel.buffers[bv.buffer];
+        uvs = reinterpret_cast<const float *>(buf.data.data() + bv.byteOffset +
+                                              acc.byteOffset);
+      }
+
+      // --- Remplissage des vertices ---
+      uint32_t baseVertex = static_cast<uint32_t>(vertices.size());
+      for (int i = 0; i < vertexCount; i++) {
+        Vertex v{};
+        if (positions)
+          v.position = {positions[i * 3], positions[i * 3 + 1],
+                        positions[i * 3 + 2]};
+        if (normals)
+          v.normal = {
+
+              normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2]};
+        if (uvs)
+          v.uv = {uvs[i * 2], uvs[i * 2 + 1]};
+        v.color = {1.f, 1.f, 1.f};
+        vertices.push_back(v);
+      }
+
+      // ---Indices ---
+      if (primitive.indices >= 0) {
+        auto &acc = gltfModel.accessors[primitive.indices];
+        auto &bv = gltfModel.bufferViews[acc.bufferView];
+        auto &buf = gltfModel.buffers[bv.buffer];
+        const uint8_t *data = buf.data.data() + bv.byteOffset + acc.byteOffset;
+
+        for (int i = 0; i < vertexCount; i++) {
+          uint32_t idx;
+          switch (acc.componentType) {
+          case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
+            idx = reinterpret_cast<const uint8_t *>(data)[i];
+            break;
+          case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
+            idx = reinterpret_cast<const uint16_t *>(data)[i];
+            break;
+          default:
+            idx = reinterpret_cast<const uint32_t *>(data)[i];
+            break;
+          }
+          indices.push_back(baseVertex + idx);
+        }
+      }
+    }
+  }
+}
 } // namespace mc

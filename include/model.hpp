@@ -35,6 +35,10 @@ public:
     std::vector<Vertex> vertices{};
     std::vector<uint32_t> indices{};
     void loadModel(const std::string &filePath);
+
+  private:
+    void loadObj(const std::string &filePath);
+    void loadGltf(const std::string &filePath);
   };
 
   Model(Device &inDevice, const Model::Builder &builder);

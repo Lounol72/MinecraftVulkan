@@ -22,9 +22,10 @@
 namespace mc {
 
 struct GlobalUBO {
-  alignas(16) glm::mat4 projectionView{1.f};
-  alignas(16) glm::vec3 lightDirection = glm::normalize(glm::vec3{1.f, -3.f,
-                                                                  -1.f});
+  glm::mat4 projectionView{1.f};
+  glm::vec4 ambientLightColor{1.f, 1.f, 1.f, .02f};
+  glm::vec3 lightPosition{-1.f};
+  alignas(16) glm::vec4 lightColor{1.f}; // w is light intensity
 };
 
 App::App() {
@@ -68,6 +69,7 @@ void App::run() {
   camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
 
   auto viewerObject = GameObject::createGameObject();
+  viewerObject.transform.translation.z = -2.5f;
   KeyBoardMovementController cameraController{};
 
   auto currentTime = std::chrono::high_resolution_clock::now();
@@ -117,7 +119,7 @@ void App::loadGameObjects() {
 
   auto gameObject = GameObject::createGameObject();
   gameObject.model = Gamemodel;
-  gameObject.transform.translation = {.0f, .5f, 2.5f};
+  gameObject.transform.translation = {.0f, .5f, 0.f};
   gameObject.transform.scale = glm::vec3(3.f);
   gameObjects.push_back(std::move(gameObject));
 }
