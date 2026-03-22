@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "/home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.frag.spv"
+  "/home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.vert.spv"
   "/home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.frag.spv"
   "/home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.vert.spv"
   "CMakeFiles/VulkanEngineShaders"

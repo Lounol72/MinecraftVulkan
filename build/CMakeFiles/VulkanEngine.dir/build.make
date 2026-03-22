@@ -212,24 +212,10 @@ CMakeFiles/VulkanEngine.dir/src/renderer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/VulkanEngine.dir/src/renderer.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lounol72/Projets/Cpp/vulkanEngine/src/renderer.cpp -o CMakeFiles/VulkanEngine.dir/src/renderer.cpp.s
 
-CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o: CMakeFiles/VulkanEngine.dir/flags.make
-CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o: /home/lounol72/Projets/Cpp/vulkanEngine/src/simple_render_system.cpp
-CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o: CMakeFiles/VulkanEngine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o -MF CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o.d -o CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o -c /home/lounol72/Projets/Cpp/vulkanEngine/src/simple_render_system.cpp
-
-CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lounol72/Projets/Cpp/vulkanEngine/src/simple_render_system.cpp > CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.i
-
-CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lounol72/Projets/Cpp/vulkanEngine/src/simple_render_system.cpp -o CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.s
-
 CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o: CMakeFiles/VulkanEngine.dir/flags.make
 CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o: /home/lounol72/Projets/Cpp/vulkanEngine/src/swap_chain.cpp
 CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o: CMakeFiles/VulkanEngine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o -MF CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o.d -o CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o -c /home/lounol72/Projets/Cpp/vulkanEngine/src/swap_chain.cpp
 
 CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.i: cmake_force
@@ -240,10 +226,38 @@ CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lounol72/Projets/Cpp/vulkanEngine/src/swap_chain.cpp -o CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.s
 
+CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o: CMakeFiles/VulkanEngine.dir/flags.make
+CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o: /home/lounol72/Projets/Cpp/vulkanEngine/src/systems/point_light_system.cpp
+CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o: CMakeFiles/VulkanEngine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o -MF CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o.d -o CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o -c /home/lounol72/Projets/Cpp/vulkanEngine/src/systems/point_light_system.cpp
+
+CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lounol72/Projets/Cpp/vulkanEngine/src/systems/point_light_system.cpp > CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.i
+
+CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lounol72/Projets/Cpp/vulkanEngine/src/systems/point_light_system.cpp -o CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.s
+
+CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o: CMakeFiles/VulkanEngine.dir/flags.make
+CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o: /home/lounol72/Projets/Cpp/vulkanEngine/src/systems/simple_render_system.cpp
+CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o: CMakeFiles/VulkanEngine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o -MF CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o.d -o CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o -c /home/lounol72/Projets/Cpp/vulkanEngine/src/systems/simple_render_system.cpp
+
+CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lounol72/Projets/Cpp/vulkanEngine/src/systems/simple_render_system.cpp > CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.i
+
+CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lounol72/Projets/Cpp/vulkanEngine/src/systems/simple_render_system.cpp -o CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.s
+
 CMakeFiles/VulkanEngine.dir/src/window.cpp.o: CMakeFiles/VulkanEngine.dir/flags.make
 CMakeFiles/VulkanEngine.dir/src/window.cpp.o: /home/lounol72/Projets/Cpp/vulkanEngine/src/window.cpp
 CMakeFiles/VulkanEngine.dir/src/window.cpp.o: CMakeFiles/VulkanEngine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/VulkanEngine.dir/src/window.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/VulkanEngine.dir/src/window.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/VulkanEngine.dir/src/window.cpp.o -MF CMakeFiles/VulkanEngine.dir/src/window.cpp.o.d -o CMakeFiles/VulkanEngine.dir/src/window.cpp.o -c /home/lounol72/Projets/Cpp/vulkanEngine/src/window.cpp
 
 CMakeFiles/VulkanEngine.dir/src/window.cpp.i: cmake_force
@@ -266,8 +280,9 @@ VulkanEngine_OBJECTS = \
 "CMakeFiles/VulkanEngine.dir/src/model.cpp.o" \
 "CMakeFiles/VulkanEngine.dir/src/pipeline.cpp.o" \
 "CMakeFiles/VulkanEngine.dir/src/renderer.cpp.o" \
-"CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o" \
 "CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o" \
+"CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o" \
+"CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o" \
 "CMakeFiles/VulkanEngine.dir/src/window.cpp.o"
 
 # External object files for target VulkanEngine
@@ -283,12 +298,13 @@ libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/src/keyboard_movement_controller.
 libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/src/model.cpp.o
 libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/src/pipeline.cpp.o
 libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/src/renderer.cpp.o
-libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o
 libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o
+libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o
+libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o
 libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/src/window.cpp.o
 libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/build.make
 libVulkanEngine.a: CMakeFiles/VulkanEngine.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX static library libVulkanEngine.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX static library libVulkanEngine.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/VulkanEngine.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/VulkanEngine.dir/link.txt --verbose=$(VERBOSE)
 

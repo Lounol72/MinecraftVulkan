@@ -66,21 +66,33 @@ include CMakeFiles/VulkanEngineShaders.dir/compiler_depend.make
 # Include the progress variables for this target.
 include CMakeFiles/VulkanEngineShaders.dir/progress.make
 
-CMakeFiles/VulkanEngineShaders: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.vert.spv
+CMakeFiles/VulkanEngineShaders: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.frag.spv
+CMakeFiles/VulkanEngineShaders: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.vert.spv
 CMakeFiles/VulkanEngineShaders: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.frag.spv
+CMakeFiles/VulkanEngineShaders: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.vert.spv
+
+/home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.frag.spv: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.frag
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Compilation shader: point_light.frag"
+	/usr/bin/glslc /home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.frag -o /home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.frag.spv
+
+/home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.vert.spv: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.vert
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Compilation shader: point_light.vert"
+	/usr/bin/glslc /home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.vert -o /home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.vert.spv
 
 /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.frag.spv: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.frag
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Compilation shader: shader.frag"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Compilation shader: shader.frag"
 	/usr/bin/glslc /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.frag -o /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.frag.spv
 
 /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.vert.spv: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.vert
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Compilation shader: shader.vert"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/lounol72/Projets/Cpp/vulkanEngine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Compilation shader: shader.vert"
 	/usr/bin/glslc /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.vert -o /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.vert.spv
 
 CMakeFiles/VulkanEngineShaders.dir/codegen:
 .PHONY : CMakeFiles/VulkanEngineShaders.dir/codegen
 
 VulkanEngineShaders: CMakeFiles/VulkanEngineShaders
+VulkanEngineShaders: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.frag.spv
+VulkanEngineShaders: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/point_light.vert.spv
 VulkanEngineShaders: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.frag.spv
 VulkanEngineShaders: /home/lounol72/Projets/Cpp/vulkanEngine/shaders/shader.vert.spv
 VulkanEngineShaders: CMakeFiles/VulkanEngineShaders.dir/build.make

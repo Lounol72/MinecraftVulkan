@@ -18,8 +18,9 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/lounol72/Projets/Cpp/vulkanEngine/src/model.cpp" "CMakeFiles/VulkanEngine.dir/src/model.cpp.o" "gcc" "CMakeFiles/VulkanEngine.dir/src/model.cpp.o.d"
   "/home/lounol72/Projets/Cpp/vulkanEngine/src/pipeline.cpp" "CMakeFiles/VulkanEngine.dir/src/pipeline.cpp.o" "gcc" "CMakeFiles/VulkanEngine.dir/src/pipeline.cpp.o.d"
   "/home/lounol72/Projets/Cpp/vulkanEngine/src/renderer.cpp" "CMakeFiles/VulkanEngine.dir/src/renderer.cpp.o" "gcc" "CMakeFiles/VulkanEngine.dir/src/renderer.cpp.o.d"
-  "/home/lounol72/Projets/Cpp/vulkanEngine/src/simple_render_system.cpp" "CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o" "gcc" "CMakeFiles/VulkanEngine.dir/src/simple_render_system.cpp.o.d"
   "/home/lounol72/Projets/Cpp/vulkanEngine/src/swap_chain.cpp" "CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o" "gcc" "CMakeFiles/VulkanEngine.dir/src/swap_chain.cpp.o.d"
+  "/home/lounol72/Projets/Cpp/vulkanEngine/src/systems/point_light_system.cpp" "CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o" "gcc" "CMakeFiles/VulkanEngine.dir/src/systems/point_light_system.cpp.o.d"
+  "/home/lounol72/Projets/Cpp/vulkanEngine/src/systems/simple_render_system.cpp" "CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o" "gcc" "CMakeFiles/VulkanEngine.dir/src/systems/simple_render_system.cpp.o.d"
   "/home/lounol72/Projets/Cpp/vulkanEngine/src/window.cpp" "CMakeFiles/VulkanEngine.dir/src/window.cpp.o" "gcc" "CMakeFiles/VulkanEngine.dir/src/window.cpp.o.d"
   )
 

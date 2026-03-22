@@ -5,6 +5,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+endif()
+
 # ── Sources ────────────────────────────────────────────────────────────────────
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
@@ -23,8 +28,16 @@ foreach(ENTRY ${LIB_SUBDIRS})
     endif()
 endforeach()
 
+file(GLOB_RECURSE INCLUDE_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/include/*)
+foreach(ENTRY ${INCLUDE_SUBDIRS})
+    if(IS_DIRECTORY ${ENTRY})
+        list(APPEND INCLUDE_DIRS ${ENTRY})
+    endif()
+endforeach()
+
 target_include_directories(VulkanEngine PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    ${INCLUDE_DIRS}
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libs>
     ${LIB_INCLUDE_DIRS}
     $<INSTALL_INTERFACE:include>
@@ -46,7 +59,10 @@ target_link_libraries(VulkanEngine PUBLIC
 )
 
 # ── Compiler flags ─────────────────────────────────────────────────────────────
-target_compile_options(VulkanEngine PRIVATE -O2)
+target_compile_options(VulkanEngine PRIVATE
+    $<$<CONFIG:Release>:-O2>
+    $<$<CONFIG:Debug>:-O0 -g>
+)
 
 target_compile_definitions(VulkanEngine PUBLIC
     $<$<CONFIG:Release>:NDEBUG>
@@ -56,9 +72,9 @@ target_compile_definitions(VulkanEngine PUBLIC
 find_program(GLSLC glslc REQUIRED)
 
 set(SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
-set(SHADER_SOURCES
-    ${SHADER_DIR}/shader.vert
-    ${SHADER_DIR}/shader.frag
+file(GLOB SHADER_SOURCES
+    ${SHADER_DIR}/*.vert
+    ${SHADER_DIR}/*.frag
 )
 
 foreach(SHADER ${SHADER_SOURCES})

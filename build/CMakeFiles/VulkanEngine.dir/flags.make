@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/lounol72/Projets/Cpp/vulkanEngine/include -I/home/lounol72/Projets/Cpp/vulkanEngine/libs -I/home/lounol72/Projets/Cpp/vulkanEngine/libs/tinygltf -I/home/lounol72/Projets/Cpp/vulkanEngine/libs/tinyobjloader
+CXX_INCLUDES = -I/home/lounol72/Projets/Cpp/vulkanEngine/include -I/home/lounol72/Projets/Cpp/vulkanEngine/include/systems -I/home/lounol72/Projets/Cpp/vulkanEngine/libs -I/home/lounol72/Projets/Cpp/vulkanEngine/libs/tinygltf -I/home/lounol72/Projets/Cpp/vulkanEngine/libs/tinygltf/.cache -I/home/lounol72/Projets/Cpp/vulkanEngine/libs/tinygltf/.cache/clangd -I/home/lounol72/Projets/Cpp/vulkanEngine/libs/tinygltf/.cache/clangd/index -I/home/lounol72/Projets/Cpp/vulkanEngine/libs/tinyobjloader
 
-CXX_FLAGS = -std=gnu++17 -O2
+CXX_FLAGS = -std=gnu++17
 
