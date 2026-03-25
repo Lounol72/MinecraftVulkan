@@ -1,4 +1,5 @@
 #include "pipeline.hpp"
+#include <vulkan/vulkan_core.h>
 #include <cassert>
 #include <fstream>
 #include <iostream>
@@ -200,7 +201,10 @@ namespace mc {
     configInfo.bindingDescription   = Model::Vertex::getBindingDescriptions();
     configInfo.attributeDescription = Model::Vertex::getAttributeDescriptions();
   }
-  void Pipeline::bind(VkCommandBuffer commandBuffer) {
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+  void Pipeline::depthOnlyPipelineConfigInfo(PipelineConfigInfo &configInfo) {
+    defaultPipelineConfigInfo(configInfo);
+    configInfo.colorBlendAttachment.colorWriteMask  = 0;
+    configInfo.depthStencilInfo.depthWriteEnable    = VK_TRUE;
+    configInfo.depthStencilInfo.depthCompareOp      = VK_COMPARE_OP_LESS;
   }
 } // namespace mc

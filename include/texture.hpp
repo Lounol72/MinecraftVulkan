@@ -9,7 +9,7 @@ namespace mc {
   class Texture {
   public:
     Texture(Device &device, const std::string &filePath);
-    Texture(Device &device, int w, int h, stbi_uc *pixels);
+    Texture(Device &device, int w, int h, const stbi_uc *pixels);
     ~Texture();
 
     Texture(const Texture &)            = delete;
@@ -18,7 +18,7 @@ namespace mc {
     VkDescriptorImageInfo descriptorInfo() const;
 
   private:
-    void createImage(int w, int h, stbi_uc *pixels);
+    void createImage(int w, int h, const stbi_uc *pixels);
     void transitionImageLayout(VkImageLayout oldLayout, VkImageLayout newLayout);
     void createImageView();
     void createSampler();

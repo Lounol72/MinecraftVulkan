@@ -49,6 +49,9 @@ namespace mc {
     VkDescriptorSetLayout getDescriptorSetLayout() const {
       return descriptorSetLayout;
     }
+    Device &getDevice() const {
+      return device;
+    }
 
   private:
     Device               &device;
@@ -196,6 +199,7 @@ namespace mc {
   class DescriptorWriter {
   public:
     DescriptorWriter(DescriptorSetLayout &setLayout, DescriptorPool &pool);
+    DescriptorWriter(DescriptorSetLayout &setLayout);
 
     // Prépare l'écriture d'un buffer (UBO, SSBO...) au binding donné.
     DescriptorWriter &writeBuffer(uint32_t binding, VkDescriptorBufferInfo *bufferInfo);
@@ -217,7 +221,7 @@ namespace mc {
 
   private:
     DescriptorSetLayout              &setLayout;
-    DescriptorPool                   &pool;
+    DescriptorPool                   *pool;
     std::vector<VkWriteDescriptorSet> writes;
   };
 

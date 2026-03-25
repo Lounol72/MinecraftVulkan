@@ -10,25 +10,33 @@ const vec2 OFFSETS[6] = vec2[](
 );
 
 layout (location = 0) out vec2 fragOffset;
+layout (location = 1) out flat int lightIndex;
 
-layout (set = 0, binding = 0) uniform GlobalUbo {
-  mat4 projection;
-  mat4 view;
-  vec4 ambientLightColor;
-  vec3 lightPosition;
-  vec4 lightColor;
-} ubo;
+struct PointLightData {
+  vec4 position;
+  vec4 color;
+};
+
+layout(std430, set = 0, binding = 0) readonly buffer GlobalSceneData {
+  mat4           projection;
+  mat4           view;
+  vec4           ambientLightColor;
+  PointLightData pointLights[10];
+  int            numLights;
+} scene;
 
 const float LIGHT_RADIUS = 0.1;
 
 void main() {
   fragOffset = OFFSETS[gl_VertexIndex];
-  vec3 cameraRightWorld =  {ubo.view[0][0], ubo.view[1][0], ubo.view[2][0]};
-  vec3 cameraUpWorld =  {ubo.view[0][1], ubo.view[1][1], ubo.view[2][1]};
+  lightIndex = gl_InstanceIndex;
 
-  vec3 positionWorld = ubo.lightPosition.xyz
+  vec3 cameraRightWorld = {scene.view[0][0], scene.view[1][0], scene.view[2][0]};
+  vec3 cameraUpWorld    = {scene.view[0][1], scene.view[1][1], scene.view[2][1]};
+
+  vec3 positionWorld = scene.pointLights[gl_InstanceIndex].position.xyz
     + LIGHT_RADIUS * fragOffset.x * cameraRightWorld
     + LIGHT_RADIUS * fragOffset.y * cameraUpWorld;
 
-  gl_Position = ubo.projection * ubo.view * vec4(positionWorld, 1.0);
+  gl_Position = scene.projection * scene.view * vec4(positionWorld, 1.0);
 }

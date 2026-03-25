@@ -1,10 +1,13 @@
 #include "model.hpp"
 #include <vulkan/vulkan_core.h>
+#include <cstddef>
 #include <cstdint>
+#include <glm/common.hpp>
 #include <iostream>
 #include <memory>
 #include <regex>
 #include <stdexcept>
+#include <vector>
 #include "utils.hpp"
 
 // libs
@@ -34,12 +37,40 @@ namespace std {
   };
 } // namespace std
 
+namespace {
+  template <typename T>
+  std::vector<T> readAccessor(const tinygltf::Model &model, int accessorId) {
+    const auto    &acc    = model.accessors[accessorId];
+    const auto    &bv     = model.bufferViews[acc.bufferView];
+    const auto    &buf    = model.buffers[bv.buffer];
+    size_t         stride = bv.byteStride ? bv.byteStride : sizeof(T);
+    const uint8_t *base   = buf.data.data() + bv.byteOffset + acc.byteOffset;
+
+    std::vector<T> result(acc.count);
+    for (size_t i = 0; i < acc.count; i++) {
+      memcpy(&result[i], base + i * stride, sizeof(T));
+    }
+    return result;
+  };
+} // namespace
+
 namespace mc {
 
   Model::Model(Device &inDevice, const Model::Builder &builder)
-      : device{inDevice} {
+      : device{inDevice},
+        albedoIndex{builder.albedoImageIndex},
+        normalIndex{builder.normalImageIndex},
+        roughnessIndex{builder.roughnessImageIndex} {
     createVertexBuffers(builder.vertices);
     createIndexBuffers(builder.indices);
+    for (auto &img : builder.images) {
+      textures.push_back(
+          std::make_shared<Texture>(device, img.width, img.height, img.pixels.data()));
+    }
+    for (const auto &v : builder.vertices) {
+      aabb.min = glm::min(aabb.min, v.position);
+      aabb.max = glm::max(aabb.max, v.position);
+    }
   }
   Model::~Model() {
   }
@@ -164,7 +195,8 @@ namespace mc {
 
     attributeDescriptions.push_back({2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal)});
 
-    attributeDescriptions.push_back({3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv)});
+    attributeDescriptions.push_back({3, 0, VK_FORMAT_R32G32_SFLOAT,        offsetof(Vertex, uv)});
+    attributeDescriptions.push_back({4, 0, VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, tangent)});
 
     return attributeDescriptions;
   }
@@ -253,63 +285,43 @@ namespace mc {
 
     for (auto &mesh : gltfModel.meshes) {
       for (auto &primitive : mesh.primitives) {
-        // --- Positions ---
-        const float *positions   = nullptr;
-        size_t       vertexCount = 0;
-        if (primitive.attributes.count("POSITION")) {
-          auto &acc = gltfModel.accessors[primitive.attributes.at("POSITION")];
-          auto &bv  = gltfModel.bufferViews[acc.bufferView];
-          auto &buf = gltfModel.buffers[bv.buffer];
-          positions =
-              reinterpret_cast<const float *>(buf.data.data() + bv.byteOffset + acc.byteOffset);
-          vertexCount = acc.count;
-        }
-
-        // --- Normales ---
-        const float *normals = nullptr;
-        if (primitive.attributes.count("NORMAL")) {
-          auto &acc = gltfModel.accessors[primitive.attributes.at("NORMAL")];
-          auto &bv  = gltfModel.bufferViews[acc.bufferView];
-          auto &buf = gltfModel.buffers[bv.buffer];
-          normals =
-              reinterpret_cast<const float *>(buf.data.data() + bv.byteOffset + acc.byteOffset);
-        }
-
-        // ---UVs---
-        const float *uvs = nullptr;
-        if (primitive.attributes.count("TEXCOORD_0")) {
-          auto &acc = gltfModel.accessors[primitive.attributes.at("TEXCOORD_0")];
-          auto &bv  = gltfModel.bufferViews[acc.bufferView];
-          auto &buf = gltfModel.buffers[bv.buffer];
-          uvs = reinterpret_cast<const float *>(buf.data.data() + bv.byteOffset + acc.byteOffset);
-        }
-
-        // --- Remplissage des vertices ---
         uint32_t baseVertex = static_cast<uint32_t>(vertices.size());
-        for (int i = 0; i < vertexCount; i++) {
-          Vertex v{};
-          if (positions)
-            v.position = {positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]};
-          if (normals)
-            v.normal = {
 
-                normals[i * 3],
-                normals[i * 3 + 1],
-                normals[i * 3 + 2]};
-          if (uvs)
-            v.uv = {uvs[i * 2], uvs[i * 2 + 1]};
+        std::vector<glm::vec3> positions, normals;
+        std::vector<glm::vec2> uvs;
+        std::vector<glm::vec4> tangents;
+
+        auto &attrs = primitive.attributes;
+        if (attrs.count("POSITION"))
+          positions = readAccessor<glm::vec3>(gltfModel, attrs.at("POSITION"));
+        if (attrs.count("NORMAL"))
+          normals = readAccessor<glm::vec3>(gltfModel, attrs.at("NORMAL"));
+        if (attrs.count("TEXCOORD_0"))
+          uvs = readAccessor<glm::vec2>(gltfModel, attrs.at("TEXCOORD_0"));
+        if (attrs.count("TANGENT"))
+          tangents = readAccessor<glm::vec4>(gltfModel, attrs.at("TANGENT"));
+
+        size_t vertexCount = positions.size();
+        for (size_t i = 0; i < vertexCount; i++) {
+          Vertex v{};
+          v.position = positions[i];
+          if (!normals.empty())
+            v.normal = normals[i];
+          if (!uvs.empty())
+            v.uv = uvs[i];
+          if (!tangents.empty())
+            v.tangent = tangents[i];
           v.color = {1.f, 1.f, 1.f};
           vertices.push_back(v);
         }
 
-        // ---Indices ---
         if (primitive.indices >= 0) {
           auto          &acc  = gltfModel.accessors[primitive.indices];
           auto          &bv   = gltfModel.bufferViews[acc.bufferView];
           auto          &buf  = gltfModel.buffers[bv.buffer];
           const uint8_t *data = buf.data.data() + bv.byteOffset + acc.byteOffset;
 
-          for (int i = 0; i < vertexCount; i++) {
+          for (size_t i = 0; i < acc.count; i++) {
             uint32_t idx;
             switch (acc.componentType) {
             case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
@@ -320,12 +332,45 @@ namespace mc {
               break;
             default:
               idx = reinterpret_cast<const uint32_t *>(data)[i];
-              break;
             }
             indices.push_back(baseVertex + idx);
           }
         }
       }
     }
+    if (!gltfModel.materials.empty()) {
+      const auto &mat = gltfModel.materials[0];
+      const auto &pbr = mat.pbrMetallicRoughness;
+
+      auto resolveSource = [&](int texIndex) -> int {
+        if (texIndex < 0 || texIndex >= (int)gltfModel.textures.size())
+          return -1;
+        return gltfModel.textures[texIndex].source;
+      };
+
+      albedoImageIndex    = resolveSource(pbr.baseColorTexture.index);
+      normalImageIndex    = resolveSource(mat.normalTexture.index);
+      roughnessImageIndex = resolveSource(pbr.metallicRoughnessTexture.index);
+    }
+
+    for (auto &img : gltfModel.images) {
+      RawImage raw;
+      raw.width  = img.width;
+      raw.height = img.height;
+
+      if (img.component == 4) {
+        raw.pixels.assign(img.image.begin(), img.image.end());
+      } else {
+        raw.pixels.resize(img.width * img.height * 4);
+        for (int i = 0; i < img.width * img.height; i++) {
+          raw.pixels[i * 4 + 0] = img.component > 0 ? img.image[i * img.component + 0] : 0;
+          raw.pixels[i * 4 + 1] = img.component > 1 ? img.image[i * img.component + 1] : 0;
+          raw.pixels[i * 4 + 2] = img.component > 2 ? img.image[i * img.component + 2] : 0;
+          raw.pixels[i * 4 + 3] = 255;
+        }
+      }
+      images.push_back(std::move(raw));
+    }
   }
+
 } // namespace mc

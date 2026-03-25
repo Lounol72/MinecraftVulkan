@@ -4,6 +4,17 @@
 #include "device.hpp"
 
 namespace mc {
+  /**
+   * La classe texture permets de créer une image à partir d'un fichier ou d'une hauteur et largeur.
+   * Chaque instance appartiendra à un material.
+   */
+
+  /*
+   * Construit la texture à partir d'un fichier.
+   * @param &device : mc::Device
+   * @param &filePath : const std::string
+   *
+   * */
   Texture::Texture(Device &device, const std::string &filePath)
       : device{device} {
     int      w, h, channels;
@@ -20,13 +31,24 @@ namespace mc {
     createSampler();
   }
 
-  Texture::Texture(Device &device, int w, int h, stbi_uc *pixels)
+  /*
+   * Construit la texture à partir d'une taille désirée w * h. Récupération de pixels
+   * @param &device : mc::Device
+   * @param w : int
+   * @param h : int
+   * @param *pixels : stbi_uc
+   *
+   * */
+  Texture::Texture(Device &device, int w, int h, const stbi_uc *pixels)
       : device{device} {
     createImage(w, h, pixels);
     createImageView();
     createSampler();
   }
-
+  /*
+   * Desctructeur : D'abord le sampler, puis l'imageView, l'image et enfin le deviceMemory
+   *
+   * */
   Texture::~Texture() {
     vkDestroySampler(device.device(), sampler, nullptr);
     vkDestroyImageView(device.device(), imageView, nullptr);
@@ -34,7 +56,14 @@ namespace mc {
     vkFreeMemory(device.device(), deviceMemory, nullptr);
   }
 
-  void Texture::createImage(int w, int h, stbi_uc *pixels) {
+  /*
+   * Transmets au GPU l'image à partir des différents paramètres.
+   * @param w : int
+   * @param h : int
+   * @param *pixels : stbi_uc
+   *
+   * */
+  void Texture::createImage(int w, int h, const stbi_uc *pixels) {
     VkDeviceSize imageSize = w * h * 4; // RGBA
 
     // StagingBuffer
@@ -48,6 +77,7 @@ namespace mc {
     stagingBuffer.map();
     stagingBuffer.writeToBuffer(pixels);
 
+    // Création de des informations de l'image.
     VkImageCreateInfo imageInfo{};
     imageInfo.sType         = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     imageInfo.imageType     = VK_IMAGE_TYPE_2D;

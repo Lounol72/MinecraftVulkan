@@ -1,4 +1,5 @@
 #include "point_light_system.hpp"
+#include "frame_info.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -58,6 +59,18 @@ namespace mc {
                                                                pipelineConfig);
   }
 
+  void PointLightSystem::update(FrameInfo &frameInfo, GlobalSceneData &sceneData) {
+    int i = 0;
+    for (auto &[id, obj] : frameInfo.gameObjects) {
+      if (!obj.pointLight)
+        continue;
+      sceneData.pointLights[i].position = glm::vec4(obj.transform.getTranslation(), 1.f);
+      sceneData.pointLights[i].color    = obj.pointLight->color;
+      i++;
+    }
+    sceneData.numLights = lightCount = i;
+  }
+
   void PointLightSystem::render(FrameInfo &frameInfo) {
     pipeline->bind(frameInfo.commandBuffer);
 
@@ -70,6 +83,6 @@ namespace mc {
                             0,
                             nullptr);
 
-    vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+    vkCmdDraw(frameInfo.commandBuffer, 6, lightCount, 0, 0);
   }
 } // namespace mc

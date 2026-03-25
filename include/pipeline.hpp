@@ -46,8 +46,11 @@ namespace mc {
     // Returns a sensible default config for a full-screen viewport of the given
     // dimensions.
     static void defaultPipelineConfigInfo(PipelineConfigInfo &configInfo);
+    static void depthOnlyPipelineConfigInfo(PipelineConfigInfo &configInfo);
 
-    void bind(VkCommandBuffer commandBuffer);
+    void bind(VkCommandBuffer commandBuffer) {
+      vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+    }
 
   private:
     // Reads a binary file (e.g. SPIR-V) fully into a byte buffer.

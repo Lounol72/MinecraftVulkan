@@ -24,6 +24,7 @@ namespace mc {
     PointLightSystem(const PointLightSystem &)            = delete;
     PointLightSystem &operator=(const PointLightSystem &) = delete;
 
+    void update(FrameInfo &frameinfo, GlobalSceneData &sceneData);
     void render(FrameInfo &frameInfo);
 
   private:
@@ -34,5 +35,7 @@ namespace mc {
 
     std::unique_ptr<Pipeline> pipeline;
     VkPipelineLayout          pipelineLayout;
+
+    int lightCount{0};
   };
 } // namespace mc

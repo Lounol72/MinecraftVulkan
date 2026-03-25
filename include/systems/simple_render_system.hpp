@@ -16,9 +16,7 @@ namespace mc {
   // before Pipeline.
   class SimpleRenderSystem {
   public:
-    SimpleRenderSystem(Device               &device,
-                       VkRenderPass          renderPass,
-                       VkDescriptorSetLayout globalSetLayout);
+    SimpleRenderSystem(Device &device);
     ~SimpleRenderSystem();
 
     SimpleRenderSystem(const SimpleRenderSystem &)            = delete;
@@ -27,12 +25,10 @@ namespace mc {
     void renderGameObjects(FrameInfo &frameInfo);
 
   private:
-    void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
-    void createPipeline(VkRenderPass renderPass);
+    std::vector<GameObject *> buildRenderList(FrameInfo &frameInfo);
+    void renderDepthPrePass(FrameInfo &frameInfo, const std::vector<GameObject *> &renderables);
+    void renderColorPass(FrameInfo &frameInfo, const std::vector<GameObject *> &renderables);
 
     Device &device;
-
-    std::unique_ptr<Pipeline> pipeline;
-    VkPipelineLayout          pipelineLayout;
   };
 } // namespace mc

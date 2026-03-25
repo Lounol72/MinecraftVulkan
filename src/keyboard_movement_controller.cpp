@@ -17,17 +17,17 @@ void KeyBoardMovementController::moveInPlaneXZ(GLFWwindow *window, float dt,
   if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS)
     rotate.x -= 1.f;
 
+  glm::vec3 rot = gameObject.transform.getRotation();
   if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
-    gameObject.transform.rotation += lookSpeed * dt * glm::normalize(rotate);
+    rot += lookSpeed * dt * glm::normalize(rotate);
   }
 
   /* Limits pitch values between about +/- ~85 degrees*/
-  gameObject.transform.rotation.x =
-      glm::clamp(gameObject.transform.rotation.x, -1.5f, 1.5f);
-  gameObject.transform.rotation.y =
-      glm::mod(gameObject.transform.rotation.y, glm::two_pi<float>());
+  rot.x = glm::clamp(rot.x, -1.5f, 1.5f);
+  rot.y = glm::mod(rot.y, glm::two_pi<float>());
+  gameObject.transform.setRotation(rot);
 
-  float yaw = gameObject.transform.rotation.y;
+  float yaw = rot.y;
   const glm::vec3 forwardDir{sin(yaw), 0.f, cos(yaw)};
   const glm::vec3 rightDir{forwardDir.z, 0.f, -forwardDir.x};
   const glm::vec3 upDir{0.f, -1.f, 0.f};
@@ -47,8 +47,8 @@ void KeyBoardMovementController::moveInPlaneXZ(GLFWwindow *window, float dt,
     moveDir -= upDir;
 
   if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon()) {
-    gameObject.transform.translation +=
-        moveSpeed * dt * glm::normalize(moveDir);
+    gameObject.transform.setTranslation(
+        gameObject.transform.getTranslation() + moveSpeed * dt * glm::normalize(moveDir));
   }
 }
 } // namespace mc

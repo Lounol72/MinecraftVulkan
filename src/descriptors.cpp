@@ -136,7 +136,11 @@ namespace mc {
 
   DescriptorWriter::DescriptorWriter(DescriptorSetLayout &setLayout, DescriptorPool &pool)
       : setLayout{setLayout},
-        pool{pool} {
+        pool{&pool} {
+  }
+  DescriptorWriter::DescriptorWriter(DescriptorSetLayout &setLayout)
+      : setLayout{setLayout},
+        pool{nullptr} {
   }
 
   DescriptorWriter &DescriptorWriter::writeBuffer(uint32_t                binding,
@@ -180,7 +184,7 @@ namespace mc {
   }
 
   bool DescriptorWriter::build(VkDescriptorSet &set) {
-    bool success = pool.allocateDescriptor(setLayout.getDescriptorSetLayout(), set);
+    bool success = pool->allocateDescriptor(setLayout.getDescriptorSetLayout(), set);
     if (!success) {
       return false;
     }
@@ -192,7 +196,7 @@ namespace mc {
     for (auto &write : writes) {
       write.dstSet = set;
     }
-    vkUpdateDescriptorSets(pool.device.device(), writes.size(), writes.data(), 0, nullptr);
+    vkUpdateDescriptorSets(setLayout.getDevice().device(), writes.size(), writes.data(), 0, nullptr);
   }
 
   // *************** Descriptor Allocator Growable *********************
@@ -232,18 +236,17 @@ namespace mc {
     return pool;
   }
 
-  void DescriptorAllocatorGrowable::init(Device                          &device,
-                                         uint32_t                         initialSets,
+  void DescriptorAllocatorGrowable::init(Device                           &device,
+                                         uint32_t                          initialSets,
                                          const std::vector<PoolSizeRatio> &poolRatios) {
     device_      = &device;
     ratios_      = poolRatios;
-    setsPerPool_ = initialSets * 2;  // le prochain pool sera 2x plus grand
+    setsPerPool_ = initialSets * 2; // le prochain pool sera 2x plus grand
 
     readyPools_.push_back(createPool(initialSets));
   }
 
-  bool DescriptorAllocatorGrowable::allocate(VkDescriptorSetLayout layout,
-                                             VkDescriptorSet      &set) {
+  bool DescriptorAllocatorGrowable::allocate(VkDescriptorSetLayout layout, VkDescriptorSet &set) {
     VkDescriptorPool pool = getOrCreatePool();
 
     VkDescriptorSetAllocateInfo allocInfo{};

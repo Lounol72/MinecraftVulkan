@@ -3,7 +3,9 @@
 #include "descriptors.hpp"
 #include "device.hpp"
 #include "game_object.hpp"
+#include "material.hpp"
 #include "renderer.hpp"
+#include "texture.hpp"
 #include "window.hpp"
 
 // std
@@ -35,7 +37,11 @@ namespace mc {
     Device   device{window};
     Renderer renderer{window, device};
 
-    std::unique_ptr<DescriptorPool> globalPool{};
-    GameObject::Map                 gameObjects;
+    std::unique_ptr<DescriptorPool>              globalPool{};
+    std::unique_ptr<DescriptorAllocatorGrowable> materialAllocator{};
+    std::shared_ptr<Texture>                     whiteTexture{};
+    std::shared_ptr<Texture>                     flatNormalTexture{};
+    std::unique_ptr<Material>                    defaultMaterial{};
+    GameObject::Map                              gameObjects;
   };
 } // namespace mc
