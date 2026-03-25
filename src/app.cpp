@@ -8,6 +8,7 @@
 #include "descriptors.hpp"
 #include "frame_info.hpp"
 #include "game_object.hpp"
+#include "ibl_precomputer.hpp"
 #include "keyboard_movement_controller.hpp"
 #include "material.hpp"
 #include "point_light_system.hpp"
@@ -39,7 +40,39 @@ namespace mc {
     flatNormalTexture          = std::make_shared<Texture>(device, 1, 1, flatNormalPixel);
 
     materialAllocator = std::make_unique<DescriptorAllocatorGrowable>();
-    materialAllocator->init(device, 32, {{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 3.f}});
+    materialAllocator->init(device, 32, {
+        {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 4.f},
+        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1.f}
+    });
+
+    // ── IBL setup ────────────────────────────────────────────────────────────
+    iblSetLayout =
+        DescriptorSetLayout::Builder(device)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+            .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+            .addBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+            .build();
+
+    iblPool =
+        DescriptorPool::Builder(device)
+            .setMaxSets(1)
+            .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 3)
+            .build();
+
+    {
+      IblPrecomputer precomputer{device};
+      iblMaps = precomputer.precompute("textures/env.hdr");
+    }
+
+    auto irradianceInfo  = iblMaps.irradianceMap->descriptorInfo();
+    auto prefilteredInfo = iblMaps.prefilteredMap->descriptorInfo();
+    auto brdfInfo        = iblMaps.brdfLutDescriptorInfo();
+
+    DescriptorWriter(*iblSetLayout, *iblPool)
+        .writeImage(0, &irradianceInfo)
+        .writeImage(1, &prefilteredInfo)
+        .writeImage(2, &brdfInfo)
+        .build(iblDescriptorSet);
 
     loadGameObjects();
   }
@@ -78,19 +111,28 @@ namespace mc {
 
     defaultMaterial = std::make_unique<Material>(device,
                                                  renderer.getSwapChainRenderPass(),
-                                                 globalSetLayout->getDescriptorSetLayout());
+                                                 globalSetLayout->getDescriptorSetLayout(),
+                                                 iblSetLayout->getDescriptorSetLayout());
 
     for (auto &[id, obj] : gameObjects) {
       if (!obj.model)
         continue;
-      auto albedo    = obj.model->getAlbedoTexture(whiteTexture);
-      auto normal    = obj.model->getNormalTexture(flatNormalTexture);
-      auto roughness = obj.model->getRoughnessTexture(whiteTexture);
-      obj.materialInstance = std::make_shared<MaterialInstance>(*defaultMaterial,
+      auto albedo   = obj.model->getAlbedoTexture(whiteTexture);
+      auto normal   = obj.model->getNormalTexture(flatNormalTexture);
+      auto orm      = obj.model->getRoughnessTexture(whiteTexture);
+      auto emissive = obj.model->getEmissiveTexture(whiteTexture);
+      obj.materialInstance = std::make_shared<MaterialInstance>(device,
+                                                                *defaultMaterial,
                                                                 *materialAllocator,
                                                                 albedo,
                                                                 normal,
-                                                                roughness);
+                                                                orm,
+                                                                emissive);
+      MaterialParamsUBO params{};
+      params.baseColorFactor = {1.f, 1.f, 1.f, 1.f};
+      params.pbrFactors      = {1.f, 1.f, 1.f, 1.f}; // x=metallic, y=roughness, z=normalScale, w=occlusionStrength
+      params.emissiveFactor  = obj.model->getEmissiveFactor();
+      obj.materialInstance->setParams(params);
     }
 
     SimpleRenderSystem simpleRenderSystem{device};
@@ -130,6 +172,7 @@ namespace mc {
                             commandBuffer,
                             camera,
                             globalDescriptorSets[frameIndex],
+                            iblDescriptorSet,
                             gameObjects};
         // update
         GlobalSceneData ssbo{};

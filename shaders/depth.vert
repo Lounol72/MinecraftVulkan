@@ -25,5 +25,6 @@ layout(push_constant) uniform Push {
 } push;
 
 void main() {
-  gl_Position = scene.projection * scene.view * push.modelMatrix * vec4(position, 1.0);
+  vec4 positionWorld = push.modelMatrix * vec4(position, 1.0);
+  gl_Position = scene.projection * scene.view * positionWorld;
 }

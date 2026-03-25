@@ -60,12 +60,17 @@ namespace mc {
       : device{inDevice},
         albedoIndex{builder.albedoImageIndex},
         normalIndex{builder.normalImageIndex},
-        roughnessIndex{builder.roughnessImageIndex} {
+        roughnessIndex{builder.roughnessImageIndex},
+        emissiveIndex{builder.emissiveImageIndex},
+        emissiveFactor{builder.emissiveFactor} {
     createVertexBuffers(builder.vertices);
     createIndexBuffers(builder.indices);
-    for (auto &img : builder.images) {
+    for (int i = 0; i < (int)builder.images.size(); i++) {
+      const auto &img = builder.images[i];
+      // Normal et ORM sont des données linéaires — pas de correction sRGB.
+      bool srgb = (i != builder.normalImageIndex) && (i != builder.roughnessImageIndex);
       textures.push_back(
-          std::make_shared<Texture>(device, img.width, img.height, img.pixels.data()));
+          std::make_shared<Texture>(device, img.width, img.height, img.pixels.data(), srgb));
     }
     for (const auto &v : builder.vertices) {
       aabb.min = glm::min(aabb.min, v.position);
@@ -351,6 +356,10 @@ namespace mc {
       albedoImageIndex    = resolveSource(pbr.baseColorTexture.index);
       normalImageIndex    = resolveSource(mat.normalTexture.index);
       roughnessImageIndex = resolveSource(pbr.metallicRoughnessTexture.index);
+      emissiveImageIndex  = resolveSource(mat.emissiveTexture.index);
+      emissiveFactor      = {static_cast<float>(mat.emissiveFactor[0]),
+                             static_cast<float>(mat.emissiveFactor[1]),
+                             static_cast<float>(mat.emissiveFactor[2])};
     }
 
     for (auto &img : gltfModel.images) {

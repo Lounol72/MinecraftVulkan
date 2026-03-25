@@ -3,6 +3,7 @@
 #include "descriptors.hpp"
 #include "device.hpp"
 #include "game_object.hpp"
+#include "ibl_precomputer.hpp"
 #include "material.hpp"
 #include "renderer.hpp"
 #include "texture.hpp"
@@ -41,7 +42,15 @@ namespace mc {
     std::unique_ptr<DescriptorAllocatorGrowable> materialAllocator{};
     std::shared_ptr<Texture>                     whiteTexture{};
     std::shared_ptr<Texture>                     flatNormalTexture{};
-    std::unique_ptr<Material>                    defaultMaterial{};
-    GameObject::Map                              gameObjects;
+
+    // IBL — declared before defaultMaterial so Material can use the set layout.
+    // Destroyed before Device (declared after Device in member list).
+    std::unique_ptr<DescriptorSetLayout> iblSetLayout{};
+    std::unique_ptr<DescriptorPool>      iblPool{};
+    VkDescriptorSet                      iblDescriptorSet = VK_NULL_HANDLE;
+    IblPrecomputer::IblMaps              iblMaps{};
+
+    std::unique_ptr<Material> defaultMaterial{};
+    GameObject::Map           gameObjects;
   };
 } // namespace mc

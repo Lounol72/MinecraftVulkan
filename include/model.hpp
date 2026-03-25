@@ -49,6 +49,8 @@ namespace mc {
       int                   albedoImageIndex{-1};
       int                   normalImageIndex{-1};
       int                   roughnessImageIndex{-1};
+      int                   emissiveImageIndex{-1};
+      glm::vec3             emissiveFactor{0.f};
 
       void loadModel(const std::string &filePath);
 
@@ -79,6 +81,10 @@ namespace mc {
     std::shared_ptr<Texture> getRoughnessTexture(std::shared_ptr<Texture> fallback) const {
       return namedTexture(roughnessIndex, fallback);
     }
+    std::shared_ptr<Texture> getEmissiveTexture(std::shared_ptr<Texture> fallback) const {
+      return namedTexture(emissiveIndex, fallback);
+    }
+    glm::vec3 getEmissiveFactor() const { return emissiveFactor; }
 
   private:
     void createVertexBuffers(const std::vector<Vertex> &vertices);
@@ -100,6 +106,8 @@ namespace mc {
     int                                   albedoIndex{-1};
     int                                   normalIndex{-1};
     int                                   roughnessIndex{-1};
+    int                                   emissiveIndex{-1};
+    glm::vec3                             emissiveFactor{0.f};
 
     bool                    hasIndexBuffer = false;
     std::unique_ptr<Buffer> indexBuffer{};

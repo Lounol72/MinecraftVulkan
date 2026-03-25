@@ -71,7 +71,7 @@ namespace mc {
     shaderStages[1].pName               = "main";
     shaderStages[1].flags               = 0;
     shaderStages[1].pNext               = nullptr;
-    shaderStages[1].pSpecializationInfo = nullptr;
+    shaderStages[1].pSpecializationInfo = configInfo.fragSpecializationInfo;
 
     auto &bindingDescriptions   = configInfo.bindingDescription;
     auto &attributeDescriptions = configInfo.attributeDescription;
@@ -203,8 +203,8 @@ namespace mc {
   }
   void Pipeline::depthOnlyPipelineConfigInfo(PipelineConfigInfo &configInfo) {
     defaultPipelineConfigInfo(configInfo);
-    configInfo.colorBlendAttachment.colorWriteMask  = 0;
-    configInfo.depthStencilInfo.depthWriteEnable    = VK_TRUE;
-    configInfo.depthStencilInfo.depthCompareOp      = VK_COMPARE_OP_LESS;
+    configInfo.colorBlendAttachment.colorWriteMask = 0;
+    configInfo.depthStencilInfo.depthWriteEnable   = VK_TRUE;
+    configInfo.depthStencilInfo.depthCompareOp     = VK_COMPARE_OP_LESS;
   }
 } // namespace mc

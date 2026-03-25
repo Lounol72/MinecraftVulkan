@@ -25,9 +25,10 @@ namespace mc {
     VkPipelineColorBlendAttachmentState            colorBlendAttachment;
     VkPipelineColorBlendStateCreateInfo            colorBlendInfo;
     VkPipelineDepthStencilStateCreateInfo          depthStencilInfo;
-    VkPipelineLayout                               pipelineLayout = nullptr;
-    VkRenderPass                                   renderPass     = nullptr;
-    uint32_t                                       subpass        = 0;
+    VkPipelineLayout                               pipelineLayout         = nullptr;
+    VkRenderPass                                   renderPass             = nullptr;
+    uint32_t                                       subpass                = 0;
+    const VkSpecializationInfo                    *fragSpecializationInfo = nullptr;
   };
 
   // Owns the VkPipeline and its shader modules.

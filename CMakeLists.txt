@@ -75,6 +75,7 @@ set(SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
 file(GLOB SHADER_SOURCES
     ${SHADER_DIR}/*.vert
     ${SHADER_DIR}/*.frag
+    ${SHADER_DIR}/*.comp
 )
 
 foreach(SHADER ${SHADER_SOURCES})

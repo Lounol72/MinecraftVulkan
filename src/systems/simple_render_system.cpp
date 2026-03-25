@@ -108,6 +108,13 @@ namespace mc {
 
       if (mat != lastMaterial) {
         obj->materialInstance->bindPipeline(frameInfo.commandBuffer, frameInfo.globalDescriptorSet);
+        // Bind IBL textures (set 2) — shared across all materials/objects.
+        vkCmdBindDescriptorSets(frameInfo.commandBuffer,
+                                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                obj->materialInstance->getPipelineLayout(),
+                                2, 1,
+                                &frameInfo.iblDescriptorSet,
+                                0, nullptr);
         lastMaterial         = mat;
         lastMaterialInstance = obj->materialInstance.get();
       } else if (obj->materialInstance.get() != lastMaterialInstance) {
@@ -129,8 +136,6 @@ namespace mc {
 
   void SimpleRenderSystem::renderGameObjects(FrameInfo &frameInfo) {
     auto renderables = buildRenderList(frameInfo);
-
-    renderDepthPrePass(frameInfo, renderables);
     renderColorPass(frameInfo, renderables);
   }
 } // namespace mc

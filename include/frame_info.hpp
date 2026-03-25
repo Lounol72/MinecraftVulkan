@@ -41,6 +41,7 @@ namespace mc {
     VkCommandBuffer  commandBuffer;
     Camera          &camera;
     VkDescriptorSet  globalDescriptorSet;
+    VkDescriptorSet  iblDescriptorSet;
     GameObject::Map &gameObjects;
   };
 
